@@ -138,10 +138,14 @@ DELIMITER ;
 -- Teste OK:  CALL sp_relatorio_2025(NULL);   -- lista todos
 -- Teste ERRO: CALL sp_relatorio_2025(999);   -- dispara o SIGNAL</code></pre>
       <figure>
-        <img src="assets/call-procedure.png" alt="Teste da procedure" />
-        <figcaption>Print: resultado do <code>CALL sp_relatorio_2025(NULL)</code> e o erro
-          <code>ERROR 1644 (45000)</code> ao chamar com paciente inexistente.
-          <em>(salve como <code>assets/call-procedure.png</code>)</em></figcaption>
+        <img src="assets/call-procedure.png" alt="Resultado do CALL da procedure" />
+        <figcaption>Sucesso: <code>CALL sp_relatorio_2025(NULL)</code> lista os 10 pacientes
+          com a contagem de consultas de 2025.</figcaption>
+      </figure>
+      <figure>
+        <img src="assets/call-signal.png" alt="Erro do SIGNAL" />
+        <figcaption>Validação com SIGNAL: <code>CALL sp_relatorio_2025(999)</code> dispara
+          <code>Error Code 1644 — Paciente inexistente</code>.</figcaption>
       </figure>
     </section>
 
