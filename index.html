@@ -3,192 +3,397 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Lab MySQL MediCore — Matrícula 09022004</title>
+  <title>Lab MySQL MediCore — Victor de Amorim Rodrigues (09022004)</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,700;12..96,800&family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet" />
   <style>
     :root {
-      --bg: #0f172a; --card: #1e293b; --ink: #e2e8f0; --muted: #94a3b8;
-      --accent: #38bdf8; --ok: #34d399; --line: #334155; --code: #0b1220;
+      --paper:      #eef3f3;
+      --card:       #ffffff;
+      --ink:        #0f272e;
+      --muted:      #566a6f;
+      --faint:      #82999d;
+      --line:       #e2eaea;
+      --line-2:     #cdd9da;
+      --accent:     #0c7b8a;
+      --accent-deep:#0a5e6a;
+      --accent-soft:#e2f0f1;
+      --good:       #1c8a5a;
+      --good-soft:  #e4f2ea;
+      --amber:      #9a6a12;
+      --amber-soft: #f4ecdb;
+      --term:       #0d2429;
+      --term-ink:   #cfe7ea;
+      --shadow:     0 1px 2px rgba(15,39,46,.05), 0 10px 30px rgba(15,39,46,.06);
+      --radius:     14px;
     }
     * { box-sizing: border-box; }
+    html { scroll-behavior: smooth; }
     body {
-      margin: 0; background: var(--bg); color: var(--ink);
-      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
-      line-height: 1.6;
+      margin: 0;
+      background:
+        radial-gradient(1200px 600px at 100% -10%, #dcebec 0%, transparent 55%),
+        var(--paper);
+      color: var(--ink);
+      font-family: "IBM Plex Sans", system-ui, -apple-system, sans-serif;
+      font-size: 16px;
+      line-height: 1.65;
+      -webkit-font-smoothing: antialiased;
     }
-    header {
-      padding: 40px 20px; text-align: center;
-      background: linear-gradient(135deg, #1e293b, #0f172a);
-      border-bottom: 1px solid var(--line);
+    .wrap { max-width: 940px; margin: 0 auto; padding: 0 24px; }
+
+    /* ---------- eyebrow / labels ---------- */
+    .eyebrow {
+      font-family: "IBM Plex Mono", monospace;
+      font-size: .72rem; font-weight: 600;
+      letter-spacing: .18em; text-transform: uppercase;
+      color: var(--accent);
     }
-    header h1 { margin: 0 0 8px; font-size: 1.8rem; }
-    header p { margin: 4px 0; color: var(--muted); }
-    main { max-width: 900px; margin: 0 auto; padding: 24px 20px 80px; }
-    section {
-      background: var(--card); border: 1px solid var(--line);
-      border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+
+    /* ---------- cover ---------- */
+    .cover { padding: 68px 0 40px; }
+    .cover .kicker { margin-bottom: 20px; }
+    .cover h1 {
+      font-family: "Bricolage Grotesque", sans-serif;
+      font-weight: 800; font-size: clamp(2.3rem, 6vw, 3.6rem);
+      line-height: 1.02; letter-spacing: -.02em; text-wrap: balance;
+      margin: 0 0 14px;
     }
-    h2 { color: var(--accent); font-size: 1.25rem; margin-top: 0;
-         border-bottom: 1px solid var(--line); padding-bottom: 8px; }
-    h3 { color: var(--ink); font-size: 1.02rem; margin-bottom: 6px; }
-    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
-    th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
-    th { background: #0b1220; color: var(--accent); }
-    pre {
-      background: var(--code); border: 1px solid var(--line); border-radius: 8px;
-      padding: 14px; overflow-x: auto; font-size: 0.86rem;
+    .cover h1 .thin { color: var(--accent-deep); }
+    .cover .lede {
+      font-size: 1.12rem; color: var(--muted); max-width: 60ch; margin: 0;
     }
-    code { font-family: "Cascadia Code", Consolas, monospace; color: #d1e7ff; }
-    .badge { display: inline-block; background: var(--ok); color: #052e16;
-             font-weight: 600; font-size: 0.78rem; padding: 2px 10px;
-             border-radius: 999px; }
-    figure { margin: 16px 0; }
-    figure img { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
-    figcaption { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
-    .placeholder {
-      border: 2px dashed var(--line); border-radius: 8px; padding: 28px;
-      text-align: center; color: var(--muted); background: #0b1220;
+    .meta {
+      margin-top: 34px;
+      display: grid; grid-template-columns: repeat(4, 1fr); gap: 1px;
+      background: var(--line-2); border: 1px solid var(--line-2);
+      border-radius: var(--radius); overflow: hidden; box-shadow: var(--shadow);
     }
-    footer { text-align: center; color: var(--muted); font-size: 0.85rem;
-             padding: 24px; border-top: 1px solid var(--line); }
-    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
-    @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+    .meta div { background: var(--card); padding: 16px 18px; }
+    .meta dt {
+      font-family: "IBM Plex Mono", monospace; font-size: .68rem;
+      letter-spacing: .14em; text-transform: uppercase; color: var(--faint);
+      margin: 0 0 5px;
+    }
+    .meta dd {
+      margin: 0; font-weight: 600; font-size: .98rem;
+      font-variant-numeric: tabular-nums;
+    }
+    @media (max-width: 720px) { .meta { grid-template-columns: repeat(2, 1fr); } }
+
+    /* ---------- sections ---------- */
+    section { padding: 40px 0; border-top: 1px solid var(--line); }
+    .s-head { display: flex; align-items: baseline; gap: 14px; margin-bottom: 6px; }
+    .s-num {
+      font-family: "IBM Plex Mono", monospace; font-weight: 600;
+      font-size: .95rem; color: var(--accent);
+      border: 1px solid var(--line-2); border-radius: 8px;
+      padding: 2px 9px; background: var(--card);
+    }
+    h2 {
+      font-family: "Bricolage Grotesque", sans-serif; font-weight: 700;
+      font-size: 1.6rem; letter-spacing: -.01em; margin: 0; text-wrap: balance;
+    }
+    .s-sub { color: var(--muted); margin: 4px 0 24px; max-width: 66ch; }
+    h3 {
+      font-family: "IBM Plex Sans", sans-serif; font-weight: 600;
+      font-size: 1rem; margin: 0 0 10px;
+    }
+
+    /* ---------- data table ---------- */
+    .tbl { width: 100%; border-collapse: collapse; font-size: .93rem;
+           border: 1px solid var(--line); border-radius: var(--radius);
+           overflow: hidden; box-shadow: var(--shadow); background: var(--card); }
+    .tbl th, .tbl td { text-align: left; padding: 12px 16px; border-bottom: 1px solid var(--line); }
+    .tbl thead th {
+      font-family: "IBM Plex Mono", monospace; font-size: .72rem;
+      letter-spacing: .1em; text-transform: uppercase; color: var(--muted);
+      background: #f4f8f8; font-weight: 600;
+    }
+    .tbl tr:last-child td { border-bottom: none; }
+    .tbl code { color: var(--accent-deep); }
+
+    code, .mono { font-family: "IBM Plex Mono", monospace; }
+    p code, td code, li code, figcaption code {
+      background: var(--accent-soft); color: var(--accent-deep);
+      padding: .05em .4em; border-radius: 5px; font-size: .88em;
+    }
+
+    /* ---------- terminal code panel ---------- */
+    .term {
+      background: var(--term); border-radius: var(--radius);
+      box-shadow: var(--shadow); overflow: hidden; margin: 0 0 4px;
+    }
+    .term-bar {
+      display: flex; align-items: center; gap: 7px;
+      padding: 11px 15px; border-bottom: 1px solid #17383f;
+    }
+    .term-bar i { width: 11px; height: 11px; border-radius: 50%; display: block; }
+    .term-bar .t { margin-left: 8px; font-family: "IBM Plex Mono", monospace;
+                   font-size: .72rem; color: #6f9298; letter-spacing: .04em; }
+    .term pre { margin: 0; padding: 18px 20px; overflow-x: auto; }
+    .term code {
+      font-family: "IBM Plex Mono", monospace; font-size: .84rem;
+      line-height: 1.7; color: var(--term-ink); background: none; padding: 0;
+    }
+    .term .k  { color: #6cc6d4; }   /* keyword */
+    .term .c  { color: #5f7d83; }   /* comment */
+    .term .s  { color: #e0b071; }   /* string */
+
+    /* ---------- figures ---------- */
+    figure { margin: 18px 0 0; }
+    .shot {
+      border: 1px solid var(--line-2); border-radius: 12px;
+      background: var(--card); padding: 8px; box-shadow: var(--shadow);
+    }
+    .shot img { display: block; width: 100%; border-radius: 6px; }
+    figcaption {
+      font-family: "IBM Plex Mono", monospace; font-size: .78rem;
+      color: var(--muted); margin-top: 10px; line-height: 1.5;
+    }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 18px; }
+    @media (max-width: 720px) { .grid2 { grid-template-columns: 1fr; } }
+
+    /* ---------- EXPLAIN comparison ---------- */
+    .cmp {
+      display: grid; grid-template-columns: 1.1fr auto 1.1fr; gap: 0;
+      align-items: stretch; margin: 4px 0 8px;
+      border: 1px solid var(--line-2); border-radius: var(--radius);
+      overflow: hidden; box-shadow: var(--shadow); background: var(--card);
+    }
+    .cmp .col { padding: 20px; }
+    .cmp .col.before { background: #fbf8f1; }
+    .cmp .col.after  { background: var(--good-soft); }
+    .cmp .tag {
+      font-family: "IBM Plex Mono", monospace; font-size: .7rem;
+      letter-spacing: .16em; text-transform: uppercase; font-weight: 600;
+      display: inline-block; margin-bottom: 14px; padding: 3px 10px; border-radius: 999px;
+    }
+    .cmp .before .tag { color: var(--amber); background: var(--amber-soft); }
+    .cmp .after  .tag { color: var(--good);  background: #d4eadd; }
+    .metric { display: flex; justify-content: space-between; gap: 12px;
+              padding: 7px 0; border-bottom: 1px dashed var(--line-2);
+              font-size: .9rem; }
+    .metric:last-child { border-bottom: none; }
+    .metric .lbl { font-family: "IBM Plex Mono", monospace; font-size: .74rem;
+                   letter-spacing: .06em; text-transform: uppercase; color: var(--muted); }
+    .metric .val { font-family: "IBM Plex Mono", monospace; font-weight: 600;
+                   font-variant-numeric: tabular-nums; text-align: right; }
+    .after .metric .val { color: var(--good); }
+    .cmp .arrow { display: flex; align-items: center; justify-content: center;
+                  background: var(--card); color: var(--faint); font-size: 1.3rem; padding: 0 6px; }
+    @media (max-width: 720px) {
+      .cmp { grid-template-columns: 1fr; }
+      .cmp .arrow { padding: 8px; transform: rotate(90deg); }
+    }
+
+    /* ---------- callout / reflection ---------- */
+    .note {
+      border-left: 3px solid var(--accent); background: var(--card);
+      border-radius: 0 12px 12px 0; padding: 18px 22px; box-shadow: var(--shadow);
+      font-size: 1.02rem;
+    }
+
+    .badge {
+      font-family: "IBM Plex Mono", monospace; font-size: .68rem; font-weight: 600;
+      letter-spacing: .08em; text-transform: uppercase;
+      color: var(--good); background: var(--good-soft);
+      padding: 3px 9px; border-radius: 999px; vertical-align: middle; margin-left: 8px;
+    }
+
+    footer { border-top: 1px solid var(--line); padding: 30px 0 60px;
+             color: var(--muted); font-size: .85rem; }
+    footer a { color: var(--accent-deep); text-decoration: none; border-bottom: 1px solid var(--line-2); }
+    footer a:hover { border-color: var(--accent); }
+    a:focus-visible, .term:focus-visible { outline: 2px solid var(--accent); outline-offset: 3px; }
+
+    /* ---------- entrance ---------- */
+    @media (prefers-reduced-motion: no-preference) {
+      section, .cover > * { animation: rise .6s cubic-bezier(.2,.7,.2,1) both; }
+      .cover .kicker { animation-delay: .02s; }
+      .cover h1 { animation-delay: .07s; }
+      .cover .lede { animation-delay: .12s; }
+      .cover .meta { animation-delay: .17s; }
+      @keyframes rise { from { opacity: 0; transform: translateY(12px); } to { opacity: 1; transform: none; } }
+    }
   </style>
 </head>
 <body>
-  <header>
-    <h1>Laboratório MySQL — Cenário MediCore</h1>
-    <p><strong>Matrícula:</strong> 09022004 &nbsp;•&nbsp; <strong>Nome:</strong> Victor de Amorim Rodrigues</p>
-    <p>Disciplina: Banco de Dados (MySQL) — Atividade Vercel + Evidências MySQL</p>
-  </header>
+  <div class="wrap">
 
-  <main>
+    <header class="cover">
+      <div class="kicker eyebrow">Banco de Dados · MySQL · Cenário MediCore</div>
+      <h1>Laboratório MySQL:<br /><span class="thin">evidências de um schema real</span></h1>
+      <p class="lede">Schema exclusivo, dois objetos SQL testados no MySQL Workbench e a
+        análise de um plano de execução antes e depois de um índice composto.</p>
+
+      <dl class="meta">
+        <div><dt>Aluno</dt><dd>Victor de Amorim Rodrigues</dd></div>
+        <div><dt>Matrícula</dt><dd>09022004</dd></div>
+        <div><dt>Schema</dt><dd class="mono">lab_09022004</dd></div>
+        <div><dt>Ambiente</dt><dd>MySQL 8.4.9 · Workbench 8.0</dd></div>
+      </dl>
+    </header>
+
+    <!-- 01 — SCHEMA -->
     <section>
-      <h2>1. Ambiente MySQL</h2>
-      <p>Todo o SQL foi criado e testado em <strong>MySQL Community Server 8.4</strong>
-         rodando <strong>localmente</strong> (Windows), acessado pelo MySQL Workbench.
-         Nenhuma senha é exposta neste site.</p>
-      <table>
-        <tr><th>Item</th><th>Valor</th></tr>
-        <tr><td>SGBD</td><td>MySQL 8.4.9 (local)</td></tr>
-        <tr><td>Cliente</td><td>MySQL Workbench 8.0 CE</td></tr>
-        <tr><td>Schema</td><td><code>lab_09022004</code></td></tr>
+      <div class="s-head"><span class="s-num">01</span><h2>Schema e tabelas</h2></div>
+      <p class="s-sub">Quatro tabelas com chave primária em todas, duas chaves estrangeiras
+        (<code>consultas.paciente_id → pacientes.id</code> e
+        <code>prontuarios.consulta_id → consultas.id</code>), populadas com 10 pacientes
+        e 600 consultas.</p>
+
+      <table class="tbl">
+        <thead><tr><th>Tabela</th><th>Colunas</th><th>Papel</th></tr></thead>
+        <tbody>
+          <tr><td><code>pacientes</code></td><td>id, nome, cpf, data_nasc</td><td>cadastro</td></tr>
+          <tr><td><code>consultas</code></td><td>id, paciente_id, data_consulta, especialidade</td><td>atendimentos</td></tr>
+          <tr><td><code>prontuarios</code></td><td>id, consulta_id, observacao</td><td>registro clínico</td></tr>
+          <tr><td><code>auditoria</code></td><td>id, tabela, operacao, registro_id, usuario, criado_em</td><td>rastreio</td></tr>
+        </tbody>
       </table>
+
+      <figure class="shot">
+        <img src="assets/schema-workbench.png" alt="Navegador do Workbench mostrando o schema lab_09022004 e suas quatro tabelas" />
+      </figure>
+      <figcaption>› schema <code>lab_09022004</code> e as 4 tabelas no navegador do MySQL Workbench</figcaption>
     </section>
 
+    <!-- 02 — PROCEDURE -->
     <section>
-      <h2>2. Schema e tabelas <span class="badge">4 tabelas + FKs</span></h2>
-      <p>Schema <code>lab_09022004</code> com chaves primárias em todas as tabelas e
-         duas chaves estrangeiras (<code>consultas.paciente_id → pacientes.id</code> e
-         <code>prontuarios.consulta_id → consultas.id</code>). Populado com
-         10 pacientes e 600 consultas.</p>
-      <table>
-        <tr><th>Tabela</th><th>Colunas</th></tr>
-        <tr><td><code>pacientes</code></td><td>id, nome, cpf, data_nasc</td></tr>
-        <tr><td><code>consultas</code></td><td>id, paciente_id (FK), data_consulta, especialidade</td></tr>
-        <tr><td><code>prontuarios</code></td><td>id, consulta_id (FK), observacao</td></tr>
-        <tr><td><code>auditoria</code></td><td>id, tabela, operacao, registro_id, usuario, criado_em</td></tr>
-      </table>
-      <figure>
-        <img src="assets/schema-workbench.png" alt="Schema no Workbench" />
-        <figcaption>Schema <code>lab_09022004</code> e as 4 tabelas no navegador do MySQL Workbench.</figcaption>
-      </figure>
-    </section>
+      <div class="s-head"><span class="s-num">02</span><h2>Grupo A — Stored Procedure<span class="badge">Testado</span></h2></div>
+      <p class="s-sub">A procedure <code>sp_relatorio_2025</code> percorre os pacientes com um
+        <strong>cursor</strong> e conta, para cada um, as consultas de 2025. Se receber um
+        <code>paciente_id</code> inexistente, interrompe com <code>SIGNAL SQLSTATE '45000'</code>.</p>
 
-    <section>
-      <h2>3. Grupo A — Stored Procedure com cursor + SIGNAL <span class="badge">testado</span></h2>
-      <p>A procedure <code>sp_relatorio_2025</code> percorre os pacientes com um
-         <strong>cursor</strong> e conta, para cada um, as consultas de 2025. Se receber um
-         <code>paciente_id</code> inexistente, lança <code>SIGNAL SQLSTATE '45000'</code>.</p>
-      <pre><code>DELIMITER //
-CREATE PROCEDURE sp_relatorio_2025(IN p_paciente_id INT)
-BEGIN
-  DECLARE v_done INT DEFAULT 0;
-  DECLARE v_id INT; DECLARE v_nome VARCHAR(100);
-  DECLARE v_qtd INT; DECLARE v_existe INT DEFAULT 0;
-  DECLARE cur CURSOR FOR
-     SELECT id, nome FROM pacientes
-     WHERE p_paciente_id IS NULL OR id = p_paciente_id ORDER BY id;
-  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_done = 1;
+      <div class="term">
+        <div class="term-bar">
+          <i style="background:#e06c60"></i><i style="background:#e5b95a"></i><i style="background:#54b58a"></i>
+          <span class="t">sp_relatorio_2025 · cursor + SIGNAL</span>
+        </div>
+<pre><code><span class="k">DELIMITER</span> //
+<span class="k">CREATE PROCEDURE</span> sp_relatorio_2025(<span class="k">IN</span> p_paciente_id <span class="k">INT</span>)
+<span class="k">BEGIN</span>
+  <span class="k">DECLARE</span> v_done <span class="k">INT DEFAULT</span> 0;
+  <span class="k">DECLARE</span> v_id <span class="k">INT</span>; <span class="k">DECLARE</span> v_nome <span class="k">VARCHAR</span>(100);
+  <span class="k">DECLARE</span> v_qtd <span class="k">INT</span>; <span class="k">DECLARE</span> v_existe <span class="k">INT DEFAULT</span> 0;
+  <span class="k">DECLARE</span> cur <span class="k">CURSOR FOR</span>
+     <span class="k">SELECT</span> id, nome <span class="k">FROM</span> pacientes
+     <span class="k">WHERE</span> p_paciente_id <span class="k">IS NULL OR</span> id = p_paciente_id <span class="k">ORDER BY</span> id;
+  <span class="k">DECLARE CONTINUE HANDLER FOR NOT FOUND SET</span> v_done = 1;
 
-  IF p_paciente_id IS NOT NULL THEN
-     SELECT COUNT(*) INTO v_existe FROM pacientes WHERE id = p_paciente_id;
-     IF v_existe = 0 THEN
-        SIGNAL SQLSTATE '45000'
-          SET MESSAGE_TEXT = 'Paciente inexistente no schema lab_09022004';
-     END IF;
-  END IF;
+  <span class="k">IF</span> p_paciente_id <span class="k">IS NOT NULL THEN</span>
+     <span class="k">SELECT COUNT</span>(*) <span class="k">INTO</span> v_existe <span class="k">FROM</span> pacientes <span class="k">WHERE</span> id = p_paciente_id;
+     <span class="k">IF</span> v_existe = 0 <span class="k">THEN</span>
+        <span class="k">SIGNAL SQLSTATE</span> <span class="s">'45000'</span>
+          <span class="k">SET</span> MESSAGE_TEXT = <span class="s">'Paciente inexistente no schema lab_09022004'</span>;
+     <span class="k">END IF</span>;
+  <span class="k">END IF</span>;
 
-  DROP TEMPORARY TABLE IF EXISTS tmp_rel;
-  CREATE TEMPORARY TABLE tmp_rel (paciente_id INT, nome VARCHAR(100), consultas_2025 INT);
-  OPEN cur;
-  read_loop: LOOP
-    FETCH cur INTO v_id, v_nome;
-    IF v_done THEN LEAVE read_loop; END IF;
-    SELECT COUNT(*) INTO v_qtd FROM consultas
-      WHERE paciente_id = v_id AND YEAR(data_consulta) = 2025;
-    INSERT INTO tmp_rel VALUES (v_id, v_nome, v_qtd);
-  END LOOP;
-  CLOSE cur;
-  SELECT * FROM tmp_rel ORDER BY paciente_id;
-  DROP TEMPORARY TABLE IF EXISTS tmp_rel;
-END //
-DELIMITER ;
+  <span class="k">CREATE TEMPORARY TABLE</span> tmp_rel (paciente_id <span class="k">INT</span>, nome <span class="k">VARCHAR</span>(100), consultas_2025 <span class="k">INT</span>);
 
--- Teste OK:  CALL sp_relatorio_2025(NULL);   -- lista todos
--- Teste ERRO: CALL sp_relatorio_2025(999);   -- dispara o SIGNAL</code></pre>
-      <figure>
-        <img src="assets/call-procedure.png" alt="Resultado do CALL da procedure" />
-        <figcaption>Sucesso: <code>CALL sp_relatorio_2025(NULL)</code> lista os 10 pacientes
-          com a contagem de consultas de 2025.</figcaption>
-      </figure>
-      <figure>
-        <img src="assets/call-signal.png" alt="Erro do SIGNAL" />
-        <figcaption>Validação com SIGNAL: <code>CALL sp_relatorio_2025(999)</code> dispara
-          <code>Error Code 1644 — Paciente inexistente</code>.</figcaption>
-      </figure>
-    </section>
+  <span class="c">-- percorre os pacientes com o cursor e conta as consultas de 2025</span>
+  <span class="k">OPEN</span> cur;
+  read_loop: <span class="k">LOOP</span>
+    <span class="k">FETCH</span> cur <span class="k">INTO</span> v_id, v_nome;
+    <span class="k">IF</span> v_done <span class="k">THEN LEAVE</span> read_loop; <span class="k">END IF</span>;
+    <span class="k">SELECT COUNT</span>(*) <span class="k">INTO</span> v_qtd <span class="k">FROM</span> consultas
+      <span class="k">WHERE</span> paciente_id = v_id <span class="k">AND YEAR</span>(data_consulta) = 2025;
+    <span class="k">INSERT INTO</span> tmp_rel <span class="k">VALUES</span> (v_id, v_nome, v_qtd);
+  <span class="k">END LOOP</span>;
+  <span class="k">CLOSE</span> cur;
 
-    <section>
-      <h2>4. Grupo B — Índice composto + EXPLAIN <span class="badge">obrigatório</span></h2>
-      <p>Consulta que filtra <code>consultas</code> por <code>paciente_id</code> e
-         <code>data_consulta</code>. Comparação do plano antes e depois do índice composto.</p>
-      <pre><code>-- consulta analisada
-EXPLAIN SELECT id, especialidade FROM consultas
-WHERE paciente_id = 1 AND data_consulta &gt;= '2025-01-01';
-
--- índice composto (ordem: igualdade primeiro, faixa depois)
-CREATE INDEX idx_consultas_paciente_data
-  ON consultas (paciente_id, data_consulta);</code></pre>
+  <span class="k">SELECT</span> * <span class="k">FROM</span> tmp_rel <span class="k">ORDER BY</span> paciente_id;
+<span class="k">END</span> //
+<span class="k">DELIMITER</span> ;</code></pre>
+      </div>
 
       <div class="grid2">
-        <figure>
-          <h3>Antes do índice</h3>
-          <img src="assets/explain-antes.png" alt="EXPLAIN antes do índice" />
-          <figcaption><code>type=ref</code> · <code>key=paciente_id</code> · rows=60 · filtered=33% · Using where</figcaption>
+        <figure class="shot">
+          <img src="assets/call-procedure.png" alt="Grade de resultado da procedure listando os 10 pacientes" />
+          <figcaption>› <code>CALL sp_relatorio_2025(NULL)</code> — os 10 pacientes com a contagem de 2025</figcaption>
         </figure>
-        <figure>
-          <h3>Depois do índice</h3>
-          <img src="assets/explain-depois.png" alt="EXPLAIN depois do índice" />
-          <figcaption><code>type=range</code> · <code>key=idx_consultas_paciente_data</code> · rows=24 · filtered=100% · Using index condition</figcaption>
+        <figure class="shot">
+          <img src="assets/call-signal.png" alt="Mensagem de erro 1644 disparada pelo SIGNAL" />
+          <figcaption>› <code>CALL sp_relatorio_2025(999)</code> — SIGNAL dispara o erro 1644</figcaption>
         </figure>
       </div>
     </section>
 
+    <!-- 03 — ÍNDICE + EXPLAIN -->
     <section>
-      <h2>5. Reflexão</h2>
-      <p>O índice composto <strong>foi usado</strong>. Confirmei pela coluna <code>key</code>
-         do EXPLAIN, que passou de <code>paciente_id</code> (o índice implícito criado pela
-         chave estrangeira) para <code>idx_consultas_paciente_data</code>. O <code>type</code>
-         mudou de <code>ref</code> para <code>range</code> e as linhas estimadas caíram de
-         60 para 24, com <code>filtered</code> subindo de 33% para 100%. Isso mostra que o
-         índice composto <code>(paciente_id, data_consulta)</code> resolve os dois filtros
-         (paciente e faixa de data) de uma vez, em vez de filtrar as datas linha a linha.
-         A ordem das colunas segue o <code>WHERE</code>: igualdade primeiro, faixa depois.</p>
-    </section>
-  </main>
+      <div class="s-head"><span class="s-num">03</span><h2>Grupo B — Índice composto &amp; EXPLAIN<span class="badge">Obrigatório</span></h2></div>
+      <p class="s-sub">Uma consulta filtra <code>consultas</code> por paciente e faixa de data.
+        Comparando o plano de execução antes e depois do índice composto, dá para ver o
+        otimizador trocar de estratégia.</p>
 
-  <footer>
-    Lab MySQL MediCore — Matrícula 09022004 • Gerado para a atividade da disciplina de Banco de Dados.
-  </footer>
+      <div class="term">
+        <div class="term-bar">
+          <i style="background:#e06c60"></i><i style="background:#e5b95a"></i><i style="background:#54b58a"></i>
+          <span class="t">consulta analisada + índice composto</span>
+        </div>
+<pre><code><span class="k">EXPLAIN SELECT</span> id, especialidade <span class="k">FROM</span> consultas
+<span class="k">WHERE</span> paciente_id = 1 <span class="k">AND</span> data_consulta &gt;= <span class="s">'2025-01-01'</span>;
+
+<span class="c">-- ordem importa: igualdade primeiro, faixa depois</span>
+<span class="k">CREATE INDEX</span> idx_consultas_paciente_data
+  <span class="k">ON</span> consultas (paciente_id, data_consulta);</code></pre>
+      </div>
+
+      <div class="cmp">
+        <div class="col before">
+          <span class="tag">Antes do índice</span>
+          <div class="metric"><span class="lbl">type</span><span class="val">ref</span></div>
+          <div class="metric"><span class="lbl">key</span><span class="val">paciente_id</span></div>
+          <div class="metric"><span class="lbl">linhas</span><span class="val">60</span></div>
+          <div class="metric"><span class="lbl">filtered</span><span class="val">33%</span></div>
+          <div class="metric"><span class="lbl">extra</span><span class="val">Using where</span></div>
+        </div>
+        <div class="arrow" aria-hidden="true">→</div>
+        <div class="col after">
+          <span class="tag">Depois do índice</span>
+          <div class="metric"><span class="lbl">type</span><span class="val">range</span></div>
+          <div class="metric"><span class="lbl">key</span><span class="val">idx_…_data</span></div>
+          <div class="metric"><span class="lbl">linhas</span><span class="val">24</span></div>
+          <div class="metric"><span class="lbl">filtered</span><span class="val">100%</span></div>
+          <div class="metric"><span class="lbl">extra</span><span class="val">Index condition</span></div>
+        </div>
+      </div>
+
+      <div class="grid2">
+        <figure class="shot">
+          <img src="assets/explain-antes.png" alt="EXPLAIN antes do índice: type ref, key paciente_id" />
+          <figcaption>› EXPLAIN antes — <code>type=ref</code>, <code>key=paciente_id</code></figcaption>
+        </figure>
+        <figure class="shot">
+          <img src="assets/explain-depois.png" alt="EXPLAIN depois do índice: type range, key idx_consultas_paciente_data" />
+          <figcaption>› EXPLAIN depois — <code>type=range</code>, <code>key=idx_consultas_paciente_data</code></figcaption>
+        </figure>
+      </div>
+    </section>
+
+    <!-- 04 — REFLEXÃO -->
+    <section>
+      <div class="s-head"><span class="s-num">04</span><h2>Reflexão</h2></div>
+      <div class="note">
+        O índice composto <strong>foi usado</strong>. Confirmei pela coluna <code>key</code> do
+        EXPLAIN, que passou de <code>paciente_id</code> — o índice implícito criado pela chave
+        estrangeira — para <code>idx_consultas_paciente_data</code>. O <code>type</code> mudou de
+        <code>ref</code> para <code>range</code> e as linhas estimadas caíram de <strong>60 para 24</strong>,
+        com o <code>filtered</code> subindo de 33% para 100%. O índice composto
+        <code>(paciente_id, data_consulta)</code> resolve os dois filtros — paciente e faixa de data —
+        de uma vez, em vez de varrer as datas linha a linha. A ordem das colunas acompanha o
+        <code>WHERE</code>: igualdade primeiro, faixa depois.
+      </div>
+    </section>
+
+    <footer>
+      Evidências geradas em MySQL 8.4 local (Workbench), schema <code class="mono">lab_09022004</code>.
+      Código e prints em
+      <a href="https://github.com/euvictoramorimm/lab-mysql-09022004">github.com/euvictoramorimm/lab-mysql-09022004</a>.
+    </footer>
+
+  </div>
 </body>
 </html>
