@@ -162,30 +162,16 @@ CREATE INDEX idx_consultas_paciente_data
   ON consultas (paciente_id, data_consulta);</code></pre>
 
       <div class="grid2">
-        <div>
+        <figure>
           <h3>Antes do índice</h3>
-          <pre><code>type: ref
-key:  paciente_id   (índice da FK)
-rows: 60
-filtered: 33.33%
-Extra: Using where</code></pre>
-          <figure>
-            <img src="assets/explain-antes.png" alt="EXPLAIN antes" />
-            <figcaption><em>assets/explain-antes.png</em></figcaption>
-          </figure>
-        </div>
-        <div>
+          <img src="assets/explain-antes.png" alt="EXPLAIN antes do índice" />
+          <figcaption><code>type=ref</code> · <code>key=paciente_id</code> · rows=60 · filtered=33% · Using where</figcaption>
+        </figure>
+        <figure>
           <h3>Depois do índice</h3>
-          <pre><code>type: range
-key:  idx_consultas_paciente_data
-rows: 24
-filtered: 100%
-Extra: Using index condition</code></pre>
-          <figure>
-            <img src="assets/explain-depois.png" alt="EXPLAIN depois" />
-            <figcaption><em>assets/explain-depois.png</em></figcaption>
-          </figure>
-        </div>
+          <img src="assets/explain-depois.png" alt="EXPLAIN depois do índice" />
+          <figcaption><code>type=range</code> · <code>key=idx_consultas_paciente_data</code> · rows=24 · filtered=100% · Using index condition</figcaption>
+        </figure>
       </div>
     </section>
 
