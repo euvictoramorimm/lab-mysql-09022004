@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Lab MySQL MediCore — Matrícula 09022004</title>
+  <style>
+    :root {
+      --bg: #0f172a; --card: #1e293b; --ink: #e2e8f0; --muted: #94a3b8;
+      --accent: #38bdf8; --ok: #34d399; --line: #334155; --code: #0b1220;
+    }
+    * { box-sizing: border-box; }
+    body {
+      margin: 0; background: var(--bg); color: var(--ink);
+      font-family: system-ui, -apple-system, Segoe UI, Roboto, sans-serif;
+      line-height: 1.6;
+    }
+    header {
+      padding: 40px 20px; text-align: center;
+      background: linear-gradient(135deg, #1e293b, #0f172a);
+      border-bottom: 1px solid var(--line);
+    }
+    header h1 { margin: 0 0 8px; font-size: 1.8rem; }
+    header p { margin: 4px 0; color: var(--muted); }
+    main { max-width: 900px; margin: 0 auto; padding: 24px 20px 80px; }
+    section {
+      background: var(--card); border: 1px solid var(--line);
+      border-radius: 12px; padding: 20px 24px; margin: 20px 0;
+    }
+    h2 { color: var(--accent); font-size: 1.25rem; margin-top: 0;
+         border-bottom: 1px solid var(--line); padding-bottom: 8px; }
+    h3 { color: var(--ink); font-size: 1.02rem; margin-bottom: 6px; }
+    table { border-collapse: collapse; width: 100%; margin: 12px 0; }
+    th, td { border: 1px solid var(--line); padding: 8px 10px; text-align: left; }
+    th { background: #0b1220; color: var(--accent); }
+    pre {
+      background: var(--code); border: 1px solid var(--line); border-radius: 8px;
+      padding: 14px; overflow-x: auto; font-size: 0.86rem;
+    }
+    code { font-family: "Cascadia Code", Consolas, monospace; color: #d1e7ff; }
+    .badge { display: inline-block; background: var(--ok); color: #052e16;
+             font-weight: 600; font-size: 0.78rem; padding: 2px 10px;
+             border-radius: 999px; }
+    figure { margin: 16px 0; }
+    figure img { max-width: 100%; border: 1px solid var(--line); border-radius: 8px; }
+    figcaption { color: var(--muted); font-size: 0.85rem; margin-top: 6px; }
+    .placeholder {
+      border: 2px dashed var(--line); border-radius: 8px; padding: 28px;
+      text-align: center; color: var(--muted); background: #0b1220;
+    }
+    footer { text-align: center; color: var(--muted); font-size: 0.85rem;
+             padding: 24px; border-top: 1px solid var(--line); }
+    .grid2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+    @media (max-width: 640px) { .grid2 { grid-template-columns: 1fr; } }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>Laboratório MySQL — Cenário MediCore</h1>
+    <p><strong>Matrícula:</strong> 09022004 &nbsp;•&nbsp; <strong>Nome:</strong> Victor de Amorim Rodrigues</p>
+    <p>Disciplina: Banco de Dados (MySQL) — Atividade Vercel + Evidências MySQL</p>
+  </header>
+
+  <main>
+    <section>
+      <h2>1. Ambiente MySQL</h2>
+      <p>Todo o SQL foi criado e testado em <strong>MySQL Community Server 8.4</strong>
+         rodando <strong>localmente</strong> (Windows), acessado pelo MySQL Workbench.
+         Nenhuma senha é exposta neste site.</p>
+      <table>
+        <tr><th>Item</th><th>Valor</th></tr>
+        <tr><td>SGBD</td><td>MySQL 8.4.9 (local)</td></tr>
+        <tr><td>Cliente</td><td>MySQL Workbench 8.0 CE</td></tr>
+        <tr><td>Schema</td><td><code>lab_09022004</code></td></tr>
+      </table>
+    </section>
+
+    <section>
+      <h2>2. Schema e tabelas <span class="badge">4 tabelas + FKs</span></h2>
+      <p>Schema <code>lab_09022004</code> com chaves primárias em todas as tabelas e
+         duas chaves estrangeiras (<code>consultas.paciente_id → pacientes.id</code> e
+         <code>prontuarios.consulta_id → consultas.id</code>). Populado com
+         10 pacientes e 600 consultas.</p>
+      <table>
+        <tr><th>Tabela</th><th>Colunas</th></tr>
+        <tr><td><code>pacientes</code></td><td>id, nome, cpf, data_nasc</td></tr>
+        <tr><td><code>consultas</code></td><td>id, paciente_id (FK), data_consulta, especialidade</td></tr>
+        <tr><td><code>prontuarios</code></td><td>id, consulta_id (FK), observacao</td></tr>
+        <tr><td><code>auditoria</code></td><td>id, tabela, operacao, registro_id, usuario, criado_em</td></tr>
+      </table>
+      <figure>
+        <img src="assets/schema-workbench.png" alt="Schema no Workbench" />
+        <figcaption>Print: schema <code>lab_09022004</code> e as 4 tabelas no navegador do Workbench.
+          <em>(salve o arquivo como <code>assets/schema-workbench.png</code>)</em></figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>3. Grupo A — Stored Procedure com cursor + SIGNAL <span class="badge">testado</span></h2>
+      <p>A procedure <code>sp_relatorio_2025</code> percorre os pacientes com um
+         <strong>cursor</strong> e conta, para cada um, as consultas de 2025. Se receber um
+         <code>paciente_id</code> inexistente, lança <code>SIGNAL SQLSTATE '45000'</code>.</p>
+      <pre><code>DELIMITER //
+CREATE PROCEDURE sp_relatorio_2025(IN p_paciente_id INT)
+BEGIN
+  DECLARE v_done INT DEFAULT 0;
+  DECLARE v_id INT; DECLARE v_nome VARCHAR(100);
+  DECLARE v_qtd INT; DECLARE v_existe INT DEFAULT 0;
+  DECLARE cur CURSOR FOR
+     SELECT id, nome FROM pacientes
+     WHERE p_paciente_id IS NULL OR id = p_paciente_id ORDER BY id;
+  DECLARE CONTINUE HANDLER FOR NOT FOUND SET v_done = 1;
+
+  IF p_paciente_id IS NOT NULL THEN
+     SELECT COUNT(*) INTO v_existe FROM pacientes WHERE id = p_paciente_id;
+     IF v_existe = 0 THEN
+        SIGNAL SQLSTATE '45000'
+          SET MESSAGE_TEXT = 'Paciente inexistente no schema lab_09022004';
+     END IF;
+  END IF;
+
+  DROP TEMPORARY TABLE IF EXISTS tmp_rel;
+  CREATE TEMPORARY TABLE tmp_rel (paciente_id INT, nome VARCHAR(100), consultas_2025 INT);
+  OPEN cur;
+  read_loop: LOOP
+    FETCH cur INTO v_id, v_nome;
+    IF v_done THEN LEAVE read_loop; END IF;
+    SELECT COUNT(*) INTO v_qtd FROM consultas
+      WHERE paciente_id = v_id AND YEAR(data_consulta) = 2025;
+    INSERT INTO tmp_rel VALUES (v_id, v_nome, v_qtd);
+  END LOOP;
+  CLOSE cur;
+  SELECT * FROM tmp_rel ORDER BY paciente_id;
+  DROP TEMPORARY TABLE IF EXISTS tmp_rel;
+END //
+DELIMITER ;
+
+-- Teste OK:  CALL sp_relatorio_2025(NULL);   -- lista todos
+-- Teste ERRO: CALL sp_relatorio_2025(999);   -- dispara o SIGNAL</code></pre>
+      <figure>
+        <img src="assets/call-procedure.png" alt="Teste da procedure" />
+        <figcaption>Print: resultado do <code>CALL sp_relatorio_2025(NULL)</code> e o erro
+          <code>ERROR 1644 (45000)</code> ao chamar com paciente inexistente.
+          <em>(salve como <code>assets/call-procedure.png</code>)</em></figcaption>
+      </figure>
+    </section>
+
+    <section>
+      <h2>4. Grupo B — Índice composto + EXPLAIN <span class="badge">obrigatório</span></h2>
+      <p>Consulta que filtra <code>consultas</code> por <code>paciente_id</code> e
+         <code>data_consulta</code>. Comparação do plano antes e depois do índice composto.</p>
+      <pre><code>-- consulta analisada
+EXPLAIN SELECT id, especialidade FROM consultas
+WHERE paciente_id = 1 AND data_consulta &gt;= '2025-01-01';
+
+-- índice composto (ordem: igualdade primeiro, faixa depois)
+CREATE INDEX idx_consultas_paciente_data
+  ON consultas (paciente_id, data_consulta);</code></pre>
+
+      <div class="grid2">
+        <div>
+          <h3>Antes do índice</h3>
+          <pre><code>type: ref
+key:  paciente_id   (índice da FK)
+rows: 60
+filtered: 33.33%
+Extra: Using where</code></pre>
+          <figure>
+            <img src="assets/explain-antes.png" alt="EXPLAIN antes" />
+            <figcaption><em>assets/explain-antes.png</em></figcaption>
+          </figure>
+        </div>
+        <div>
+          <h3>Depois do índice</h3>
+          <pre><code>type: range
+key:  idx_consultas_paciente_data
+rows: 24
+filtered: 100%
+Extra: Using index condition</code></pre>
+          <figure>
+            <img src="assets/explain-depois.png" alt="EXPLAIN depois" />
+            <figcaption><em>assets/explain-depois.png</em></figcaption>
+          </figure>
+        </div>
+      </div>
+    </section>
+
+    <section>
+      <h2>5. Reflexão</h2>
+      <p>O índice composto <strong>foi usado</strong>. Confirmei pela coluna <code>key</code>
+         do EXPLAIN, que passou de <code>paciente_id</code> (o índice implícito criado pela
+         chave estrangeira) para <code>idx_consultas_paciente_data</code>. O <code>type</code>
+         mudou de <code>ref</code> para <code>range</code> e as linhas estimadas caíram de
+         60 para 24, com <code>filtered</code> subindo de 33% para 100%. Isso mostra que o
+         índice composto <code>(paciente_id, data_consulta)</code> resolve os dois filtros
+         (paciente e faixa de data) de uma vez, em vez de filtrar as datas linha a linha.
+         A ordem das colunas segue o <code>WHERE</code>: igualdade primeiro, faixa depois.</p>
+    </section>
+  </main>
+
+  <footer>
+    Lab MySQL MediCore — Matrícula 09022004 • Gerado para a atividade da disciplina de Banco de Dados.
+  </footer>
+</body>
+</html>
